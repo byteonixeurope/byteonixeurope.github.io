@@ -73,48 +73,49 @@
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
-        // Function to animate count up
-        function animateValue(id, start, end, duration) {
-            const range = end - start;
-            let current = start;
-            const increment = end > start ? 1 : -1;
-            const stepTime = Math.abs(Math.floor(duration / range));
-            const obj = document.getElementById(id);
-            const timer = setInterval(() => {
-                current += increment;
-                obj.textContent = formatNumber(current);
-                if (current == end) {
-                    clearInterval(timer);
-                }
-            }, stepTime);
+// Function to animate count up with a specified duration
+function animateValue(id, start, end, duration) {
+    const range = end - start;
+    let current = start;
+    const increment = Math.ceil(range / (duration / 1000)); // Calculate increment based on the duration
+    const obj = document.getElementById(id);
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= end) {
+            clearInterval(timer);
+            current = end;
         }
+        obj.textContent = formatNumber(current);
+    }, 1000); // Update every second
+}
 
-        // Fetch game visits from the Roblox Games API
-        fetch('https://games.roblox.com/v1/games?universeIds=2139563899')
-            .then(response => response.json())
-            .then(data => {
-                const gameVisits = data.data[0].visits;
-                animateValue('gameVisits', 0, gameVisits, 2000);
-            })
-            .catch(error => {
-                console.error('Error fetching game visits:', error);
-                document.getElementById('gameVisits').textContent = 'Error';
-            });
+// Fetch game visits from the Roblox Games API
+fetch('https://games.roblox.com/v1/games?universeIds=2139563899')
+    .then(response => response.json())
+    .then(data => {
+        const gameVisits = data.data[0].visits;
+        animateValue('gameVisits', 0, gameVisits, 5000); // 5-second animation duration
+    })
+    .catch(error => {
+        console.error('Error fetching game visits:', error);
+        document.getElementById('gameVisits').textContent = 'Error';
+    });
 
-        // Fetch group members from the Roblox Groups API
-        fetch('https://groups.roblox.com/v1/groups/9642354')
-            .then(response => response.json())
-            .then(data => {
-                const groupMembers = data.memberCount;
-                animateValue('groupMembers', 0, groupMembers, 2000);
-            })
-            .catch(error => {
-                console.error('Error fetching group members:', error);
-                document.getElementById('groupMembers').textContent = 'Error';
-            });
+// Fetch group members from the Roblox Groups API
+fetch('https://groups.roblox.com/v1/groups/9642354')
+    .then(response => response.json())
+    .then(data => {
+        const groupMembers = data.memberCount;
+        animateValue('groupMembers', 0, groupMembers, 5000); // 5-second animation duration
+    })
+    .catch(error => {
+        console.error('Error fetching group members:', error);
+        document.getElementById('groupMembers').textContent = 'Error';
+    });
 
-        // Set engagement hours manually with animation
-        animateValue('engagementHours', 0, 10000000, 2000);
+// Set engagement hours manually with animation
+animateValue('engagementHours', 0, 210000000, 5000); // 5-second animation duration for engagement hours
+
     </script>
 </body>
 </html>
